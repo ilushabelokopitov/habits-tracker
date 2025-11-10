@@ -29,3 +29,8 @@ function toggleTaskCompletion(element) {
     const taskText = element.querySelector('span');
     taskText.classList.toggle('completed');
 }
+function deleteTask(button) {
+    if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+        button.parentElement.remove();
+    }
+}
