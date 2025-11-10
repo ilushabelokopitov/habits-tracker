@@ -23,3 +23,7 @@ function addTask() {
     taskInput.value = '';
     taskInput.focus();
 }
+function toggleTaskCompletion(element) {
+    const taskText = element.querySelector('span');
+    taskText.classList.toggle('completed');
+}
