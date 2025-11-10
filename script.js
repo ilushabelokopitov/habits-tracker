@@ -14,7 +14,7 @@ function addTask() {
     const li = document.createElement('li');
     li.innerHTML = `
         <span>${taskText}</span>
-        <button onclick="event.stopPropagation(); this.parentElement.remove()">Удалить</button>
+        <button onclick="event.stopPropagation(); deleteTask(this)">Удалить</button>
     `;
     li.setAttribute('onclick', 'toggleTaskCompletion(this)');
     
@@ -28,4 +28,9 @@ function addTask() {
 function toggleTaskCompletion(element) {
     const taskText = element.querySelector('span');
     taskText.classList.toggle('completed');
+}
+function deleteTask(button) {
+    if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+        button.parentElement.remove();
+    }
 }
