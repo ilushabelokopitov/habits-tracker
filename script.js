@@ -14,8 +14,9 @@ function addTask() {
     const li = document.createElement('li');
     li.innerHTML = `
         <span>${taskText}</span>
-        <button onclick="this.parentElement.remove()">Удалить</button>
+        <button onclick="event.stopPropagation(); this.parentElement.remove()">Удалить</button>
     `;
+    li.setAttribute('onclick', 'toggleTaskCompletion(this)');
     
     taskList.appendChild(li);
     
@@ -23,6 +24,7 @@ function addTask() {
     taskInput.value = '';
     taskInput.focus();
 }
+
 function toggleTaskCompletion(element) {
     const taskText = element.querySelector('span');
     taskText.classList.toggle('completed');
