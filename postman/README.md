@@ -78,12 +78,12 @@ Mock Server позволяет тестировать работу клиент�
   - URL: `{{base_url}}/auth/login`
   - Body (JSON):
 
-```json
+
 {
   "email": "user@example.com",
   "password": "secret123"
 }
-json```
+
 - Response Example
 
 - Status: 200 OK
