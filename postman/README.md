@@ -97,7 +97,7 @@ Body:
   }
 }
 
-4.2 GET /tasks — Get All Tasks Example
+### 4.2 GET /tasks — Get All Tasks Example
 
 Response Example:
 
@@ -126,7 +126,7 @@ Body:
   }
 ]
 
-4.3 POST /tasks — Create Task Example
+### 4.3 POST /tasks — Create Task Example
 
 Response Example:
 
@@ -145,7 +145,7 @@ Body:
   "status": "pending"
 }
 
-4.4 GET /categories — Get Categories Example
+### 4.4 GET /categories — Get Categories Example
 
 Response Example:
 
@@ -169,7 +169,7 @@ Body:
     "name": "Учёба"
   }
 ]
-
+---
 ## 5. Автоматические тесты (Tests)
 
 Для запросов коллекции реализованы автоматические тесты во вкладке **Scripts → Post-response**.
