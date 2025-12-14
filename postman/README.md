@@ -83,11 +83,12 @@ Mock Server позволяет тестировать работу клиент�
   "email": "user@example.com",
   "password": "secret123"
 }
-Response Example
+json```
+- Response Example
 
-Status: 200 OK
+- Status: 200 OK
 
-Headers: Content-Type: application/json
+- Headers: Content-Type: application/json
 
 Body:
 
@@ -100,7 +101,7 @@ json
     "email": "user@example.com"
   }
 }
-4.1.2 Example: Login — Invalid credentials
+#### 4.1.2 Example: Login — Invalid credentials
 Request
 
 Method: POST
@@ -128,8 +129,8 @@ json
 {
   "message": "Invalid credentials"
 }
-4.2 GET /tasks — Get All Tasks
-4.2.1 Example: Get All Tasks — With items
+### 4.2 GET /tasks — Get All Tasks
+#### 4.2.1 Example: Get All Tasks — With items
 Response Example
 
 Status: 200 OK
@@ -158,7 +159,7 @@ json
     "status": "in_progress"
   }
 ]
-4.2.2 Example: Get All Tasks — Empty list
+#### 4.2.2 Example: Get All Tasks — Empty list
 Response Example
 
 Status: 200 OK
@@ -170,8 +171,8 @@ Body:
 json
 Копировать код
 []
-4.3 POST /tasks — Create Task
-4.3.1 Example: Create Task — Success
+### 4.3 POST /tasks — Create Task
+#### 4.3.1 Example: Create Task — Success
 Request
 
 Method: POST
@@ -235,8 +236,8 @@ json
 {
   "message": "Title is required"
 }
-4.4 PATCH /tasks/{id} — Update Task
-4.4.1 Example: Update Task (Success)
+### 4.4 PATCH /tasks/{id} — Update Task
+#### 4.4.1 Example: Update Task (Success)
 Request
 
 Method: PATCH
@@ -268,7 +269,7 @@ json
   "priority": "medium",
   "status": "in_progress"
 }
-4.4.2 Example: Update Task — Not found
+#### 4.4.2 Example: Update Task — Not found
 Request
 
 Method: PATCH
@@ -295,8 +296,8 @@ json
 {
   "message": "Task not found"
 }
-4.5 DELETE /tasks/{id} — Delete Task
-4.5.1 Example: Delete Task — Success
+### 4.5 DELETE /tasks/{id} — Delete Task
+#### 4.5.1 Example: Delete Task — Success
 Request
 
 Method: DELETE
@@ -307,7 +308,7 @@ Response Example
 
 Status: 204 No Content
 
-4.5.2 Example: Delete Task — Not found
+#### 4.5.2 Example: Delete Task — Not found
 Request
 
 Method: DELETE
@@ -327,8 +328,8 @@ json
 {
   "message": "Task not found"
 }
-4.6 GET /categories — Get Categories
-4.6.1 Example: Get Categories
+### 4.6 GET /categories — Get Categories
+#### 4.6.1 Example: Get Categories
 Response Example
 
 Status: 200 OK
@@ -353,7 +354,7 @@ json
     "name": "Учёба"
   }
 ]
-5. Автоматические тесты (Tests)
+## 5. Автоматические тесты (Tests)
 Для запросов коллекции добавлены тесты во вкладке Scripts → Post-response.
 
 Примеры проверок:
@@ -366,7 +367,7 @@ json
 
 проверки типа данных (например token — строка)
 
-6. Проверка работы мок-сервера
+## 6. Проверка работы мок-сервера
 В Postman выбрать окружение TaskManager Mock Server.
 
 Проверить POST /auth/login → Send — должен вернуться ответ из Example.
@@ -377,11 +378,11 @@ json
 
 Аналогично проверить PATCH /tasks/{id}, DELETE /tasks/{id}, GET /categories.
 
-7. Запуск коллекции (Runner)
+## 7. Запуск коллекции (Runner)
 Коллекция была запущена через Collection Runner.
 Результат: все запросы выполнились, тесты завершились статусом PASS.
 
-8. Экспорт коллекции и окружений
+## 8. Экспорт коллекции и окружений
 В репозиторий добавлены JSON-файлы:
 
 Коллекция:
@@ -398,7 +399,7 @@ MockAPI.postman_environment.json
 
 File → Import → Upload Files
 
-9. Вывод
+## 9. Вывод
 В рамках практической работы:
 
 создана коллекция запросов для API TaskManager;
