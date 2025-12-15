@@ -99,7 +99,6 @@ POST {{base_url}}/tasks?scenario=validation
 Body (без title):
 
 ```json
-Копировать код
 {
   "priority": "medium"
 }
@@ -145,7 +144,6 @@ Request
 POST {{base_url}}/auth/login
 ```
 ```json
-Копировать код
 {
   "email": "user@example.com",
   "password": "secret123"
@@ -193,7 +191,6 @@ Status: 401 Unauthorized
 GET {{base_url}}/tasks?scenario=items
 ```
 ```json
-Копировать код
 [
   {
     "id": 1,
@@ -209,7 +206,6 @@ GET {{base_url}}/tasks?scenario=items
 GET {{base_url}}/tasks?scenario=empty
 ```
 ```json
-Копировать код
 []
 ```
 6.3 POST /tasks — Create Task
@@ -219,7 +215,6 @@ GET {{base_url}}/tasks?scenario=empty
 POST {{base_url}}/tasks?scenario=success
 ```
 ```json
-Копировать код
 {
   "title": "Купить продукты",
   "priority": "medium"
@@ -233,7 +228,6 @@ Response: 201 Created
 POST {{base_url}}/tasks?scenario=validation
 ```
 ```json
-Копировать код
 {
   "priority": "medium"
 }
@@ -241,7 +235,6 @@ POST {{base_url}}/tasks?scenario=validation
 Response: 400 Bad Request
 
 ```json
-Копировать код
 {
   "message": "Title is required"
 }
@@ -253,7 +246,6 @@ Response: 400 Bad Request
 PATCH {{base_url}}/tasks/1?scenario=success
 ```
 ```json 
-Копировать код
 {
   "status": "in_progress"
 }
@@ -264,7 +256,6 @@ PATCH {{base_url}}/tasks/1?scenario=success
 PATCH {{base_url}}/tasks/9999?scenario=notfound
 ```
 ```json
-Копировать код
 {
   "message": "Task not found"
 }
@@ -283,7 +274,6 @@ Response: 204 No Content
 DELETE {{base_url}}/tasks/9999?scenario=notfound
 ```
 ```json
-Копировать код
 {
   "message": "Task not found"
 }
@@ -295,7 +285,6 @@ DELETE {{base_url}}/tasks/9999?scenario=notfound
 GET {{base_url}}/categories?scenario=items
 ```
 ```json 
-Копировать код
 [
   { "id": 1, "name": "Работа" },
   { "id": 2, "name": "Личное" }
@@ -307,7 +296,6 @@ GET {{base_url}}/categories?scenario=items
 GET {{base_url}}/categories?scenario=empty
 ```
 ```json
-Копировать код
 []
 ```
 7. Автоматические тесты
