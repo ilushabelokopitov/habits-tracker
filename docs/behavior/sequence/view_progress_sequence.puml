@@ -1,0 +1,25 @@
+@startuml
+title UC5: Просмотреть прогресс (график/стрик/статистика)
+
+actor "Пользователь" as User
+boundary "UI\n(экран прогресса)" as UI
+control "ProgressController" as PC
+database "HabitRepository\n(БД/хранилище)" as HR
+database "LogRepository\n(журнал выполнений)" as LR
+control "ProgressService\n(расчёт статистики)" as PS
+
+User -> UI : Открывает "Прогресс"\n(выбирает период, привычку/все)
+UI -> PC : getProgress(filter)
+
+PC -> HR : getHabits(filter)
+HR --> PC : список привычек
+
+PC -> LR : getLogs(habits, period)
+LR --> PC : записи выполнений
+
+PC -> PS : calculate(habits, logs, period)
+PS --> PC : статистика (%, стрик,\nграфик по дням)
+
+PC --> UI : progressData
+UI --> User : Отображает график и статистику
+@enduml
