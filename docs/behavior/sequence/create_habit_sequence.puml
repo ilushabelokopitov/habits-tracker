@@ -1,0 +1,28 @@
+@startuml
+title UC1: Создание привычки
+
+actor "Пользователь" as User
+boundary "UI\n(экран привычек)" as UI
+control "HabitController" as C
+entity "Habit" as H
+database "HabitRepository\n(БД/хранилище)" as R
+
+User -> UI : Нажимает "Добавить привычку"
+UI -> User : Показывает форму (название, цель,\nрасписание, напоминания)
+
+User -> UI : Заполняет форму\nи нажимает "Сохранить"
+UI -> C : createHabit(data)
+
+C -> C : validate(data)
+
+alt Данные корректны
+  C -> H : new(data)
+  C -> R : save(H)
+  R --> C : OK (id)
+  C --> UI : Успех + habit(id)
+  UI --> User : Показ новой привычки в списке
+else Ошибка валидации
+  C --> UI : Ошибка (какое поле неверно)
+  UI --> User : Сообщение об ошибке
+end
+@enduml
