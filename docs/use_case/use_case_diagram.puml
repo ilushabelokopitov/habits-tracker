@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+
+actor "Пользователь" as User
+actor "Сервис уведомлений" as Notify
+
+rectangle "Трекер привычек" as System {
+  usecase "UC1\nСоздать привычку" as UC1
+  usecase "UC2\nРедактировать привычку" as UC2
+  usecase "UC3\nУдалить привычку" as UC3
+  usecase "UC4\nОтметить выполнение\nпривычки" as UC4
+  usecase "UC5\nПросмотреть прогресс\n(график/стрик/статистика)" as UC5
+  usecase "UC6\nФильтровать/сортировать\nпривычки" as UC6
+  usecase "UC7\nНастроить напоминания" as UC7
+  usecase "UC8\nПолучить напоминание" as UC8
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+
+Notify --> UC8
+
+UC7 ..> UC8 : <<include>>
+@enduml
