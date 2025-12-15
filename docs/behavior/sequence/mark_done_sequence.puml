@@ -1,0 +1,26 @@
+@startuml
+title UC4: Отметить выполнение привычки за день
+
+actor "Пользователь" as User
+boundary "UI\n(экран привычки)" as UI
+control "HabitController" as C
+entity "Habit" as H
+database "HabitRepository\n(БД/хранилище)" as R
+
+User -> UI : Нажимает "Отметить выполнение"
+UI -> C : markAsDone(habitId, date)
+
+C -> R : getHabit(habitId)
+R --> C : Habit data
+
+alt Привычка найдена
+  C -> H : markCompleted(date)
+  C -> R : save(H)
+  R --> C : OK
+  C --> UI : Обновление данных
+  UI --> User : Отметка сохранена
+else Привычка не найдена
+  C --> UI : Ошибка (не найдено)
+  UI --> User : Сообщение об ошибке
+end
+@enduml
