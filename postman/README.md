@@ -1,96 +1,154 @@
 # Практика 6 — Тестирование и мокирование API в Postman
 
-В рамках данной практической работы был настроен **Postman** для тестирования API приложения **«Умный список задач / TaskManager»**, создан **Mock Server**, добавлены **Examples (примеры ответов)** и написаны **автотесты** для запросов.
+В данной работе выполнена настройка Postman для тестирования API приложения **TaskManager (Умный список задач)**, а также реализован Mock Server для имитации ответов бэкенда без запуска реального сервера.
 
 ---
 
 ## 1. Структура коллекции
 
-В Postman создана коллекция **TaskManager API** со следующей структурой:
+Создана коллекция **TaskManager API**, содержащая следующие папки и методы:
 
 ### Authentication
-- **POST /auth/login** — авторизация пользователя.
+- `POST /auth/login` — авторизация пользователя
 
 ### Tasks Management
-- **GET /tasks** — получение списка задач.
-- **POST /tasks** — создание новой задачи.
-- **PATCH /tasks/{id}** — обновление задачи.
-- **DELETE /tasks/{id}** — удаление задачи.
+- `GET /tasks` — получение списка задач
+- `POST /tasks` — создание задачи
+- `PATCH /tasks/{id}` — обновление задачи
+- `DELETE /tasks/{id}` — удаление задачи
 
 ### Categories
-- **GET /categories** — получение списка категорий.
+- `GET /categories` — получение списка категорий
 
-Все запросы используют переменную окружения `{{base_url}}`, что позволяет легко переключаться между реальным API и мок-сервером.
+Все запросы используют переменную окружения `{{base_url}}`.
 
 ---
 
 ## 2. Окружения (Environments)
 
-Созданы два окружения.
+Созданы два окружения:
 
 ### 2.1 Local API
+Используется для работы с реальным сервером.
 
-Используется для работы с реальным сервером разработки.
+Переменная:
+- `base_url = http://localhost:3000/api`
 
-- **Variable:**  
-  - `base_url = http://localhost:3000/api`  
-  *(или другой URL, указанный преподавателем)*
+---
 
 ### 2.2 TaskManager Mock Server
-
 Используется для работы с мок-сервером Postman.
 
-- **Variable:**  
-  - `base_url = https://<mock-id>.mock.pstmn.io`  
-  *(URL автоматически подставляется при создании Mock Server)*
+Переменная:
+- `base_url = https://<mock-id>.mock.pstmn.io`
 
-Выбор окружения осуществляется в правом верхнем углу Postman:  
-**Environment → Local API / TaskManager Mock Server**
+Переключение окружений осуществляется в правом верхнем углу Postman.
 
 ---
 
 ## 3. Mock Server
 
-На основе коллекции **TaskManager API** создан мок-сервер:
+Создан Mock Server на основе коллекции **TaskManager API**.
 
-- **Name:** TaskManager Mock Server  
-- **Collection:** TaskManager API  
-- Включён флаг **“Save the mock server URL as an environment variable”** — URL сохранён в окружении `TaskManager Mock Server` в переменную `base_url`
-- **Network delay:** No delay (ответы приходят сразу)
+Параметры:
+- Collection: TaskManager API
+- Save mock server URL as environment variable — включено
+- Network delay — отсутствует
 
-Mock Server позволяет тестировать работу клиента без запущенного реального бэкенда.
+Mock Server позволяет тестировать API без реального бэкенда.
 
 ---
 
 ## 4. Examples (примеры ответов)
 
-Для каждого метода созданы **примеры ответов (Examples)**.  
-Также для нескольких методов добавлено **более одного варианта ответа** (например success / error).
+Для каждого метода созданы **несколько Examples** (успешные и негативные сценарии).  
+Выбор ответа осуществляется через query-параметр `scenario`.
 
 ---
 
-### 4.1 POST /auth/login — Login
+## 5. Как вызвать негативный ответ (Error/Negative Response)
 
-#### 4.1.1 Example: Login (Success)
+Чтобы получить **негативный ответ** от Mock Server:
 
-- **Request**
-  - Method: `POST`
-  - URL: `{{base_url}}/auth/login`
-  - Body (JSON):
+1. В правом верхнем углу Postman выбрать окружение **TaskManager Mock Server**.
+2. Открыть нужный запрос из коллекции.
+3. В URL добавить соответствующий `scenario`, который привязан к негативному Example.
+4. Нажать **Send** — Mock Server вернёт ответ из нужного негативного Example.
 
+Примеры вызова негативных сценариев:
 
+- **Login (ошибка авторизации):**
+POST {{base_url}}/auth/login?scenario=invalid
+
+css
+Копировать код
+Body:
+```json
+{
+  "email": "wrong@example.com",
+  "password": "wrong"
+}
+Ожидаемый ответ: 401 Unauthorized, {"message":"Invalid credentials"}
+
+Create Task (ошибка валидации):
+
+bash
+Копировать код
+POST {{base_url}}/tasks?scenario=validation
+Body (без title):
+
+json
+Копировать код
+{
+  "priority": "medium"
+}
+Ожидаемый ответ: 400 Bad Request, {"message":"Title is required"}
+
+Update Task (задача не найдена):
+
+bash
+Копировать код
+PATCH {{base_url}}/tasks/9999?scenario=notfound
+Ожидаемый ответ: 404 Not Found, {"message":"Task not found"}
+
+Delete Task (задача не найдена):
+
+bash
+Копировать код
+DELETE {{base_url}}/tasks/9999?scenario=notfound
+Ожидаемый ответ: 404 Not Found, {"message":"Task not found"}
+
+Get All Tasks (пустой список):
+
+bash
+Копировать код
+GET {{base_url}}/tasks?scenario=empty
+Ожидаемый ответ: 200 OK, []
+
+Get Categories (пустой список):
+
+bash
+Копировать код
+GET {{base_url}}/categories?scenario=empty
+Ожидаемый ответ: 200 OK, []
+
+6. Examples (детализация ответов)
+6.1 POST /auth/login — Login
+6.1.1 Example: Login — Success
+Request
+
+bash
+Копировать код
+POST {{base_url}}/auth/login
+json
+Копировать код
 {
   "email": "user@example.com",
   "password": "secret123"
 }
+Response
 
-- Response Example
-
-- Status: 200 OK
-
-- Headers: Content-Type: application/json
-
-Body:
+Status: 200 OK
 
 json
 Копировать код
@@ -101,315 +159,162 @@ json
     "email": "user@example.com"
   }
 }
-#### 4.1.2 Example: Login — Invalid credentials
+6.1.2 Example: Login — Invalid credentials
 Request
 
-Method: POST
-
-URL: {{base_url}}/auth/login
-
-Body (JSON):
-
+bash
+Копировать код
+POST {{base_url}}/auth/login?scenario=invalid
 json
 Копировать код
 {
   "email": "wrong@example.com",
   "password": "wrong"
 }
-Response Example
+Response
 
 Status: 401 Unauthorized
-
-Headers: Content-Type: application/json
-
-Body:
 
 json
 Копировать код
 {
   "message": "Invalid credentials"
 }
-### 4.2 GET /tasks — Get All Tasks
-#### 4.2.1 Example: Get All Tasks — With items
-Response Example
-
-Status: 200 OK
-
-Headers: Content-Type: application/json
-
-Body:
-
+6.2 GET /tasks — Get All Tasks
+6.2.1 Example: Get All Tasks — With items
+bash
+Копировать код
+GET {{base_url}}/tasks?scenario=items
 json
 Копировать код
 [
   {
     "id": 1,
     "title": "Купить продукты",
-    "description": "Молоко, хлеб, яйца",
-    "dueDate": "2025-12-20",
     "priority": "medium",
     "status": "pending"
-  },
-  {
-    "id": 2,
-    "title": "Сделать домашку по БД",
-    "description": "Лаба по нормализации",
-    "dueDate": "2025-12-22",
-    "priority": "high",
-    "status": "in_progress"
   }
 ]
-#### 4.2.2 Example: Get All Tasks — Empty list
-Response Example
-
-Status: 200 OK
-
-Headers: Content-Type: application/json
-
-Body:
-
+6.2.2 Example: Get All Tasks — Empty list
+bash
+Копировать код
+GET {{base_url}}/tasks?scenario=empty
 json
 Копировать код
 []
-### 4.3 POST /tasks — Create Task
-#### 4.3.1 Example: Create Task — Success
-Request
-
-Method: POST
-
-URL: {{base_url}}/tasks
-
-Body (JSON):
-
+6.3 POST /tasks — Create Task
+6.3.1 Example: Create Task — Success
+bash
+Копировать код
+POST {{base_url}}/tasks?scenario=success
 json
 Копировать код
 {
   "title": "Купить продукты",
-  "description": "Молоко, хлеб, яйца",
-  "dueDate": "2025-12-20",
   "priority": "medium"
 }
-Response Example
+Response: 201 Created
 
-Status: 201 Created
-
-Headers: Content-Type: application/json
-
-Body:
-
+6.3.2 Example: Create Task — Validation error
+bash
+Копировать код
+POST {{base_url}}/tasks?scenario=validation
 json
 Копировать код
 {
-  "id": 3,
-  "title": "Купить продукты",
-  "description": "Молоко, хлеб, яйца",
-  "dueDate": "2025-12-20",
-  "priority": "medium",
-  "status": "pending"
-}
-4.3.2 Example: Create Task — Validation error
-Request
-
-Method: POST
-
-URL: {{base_url}}/tasks
-
-Body (JSON):
-
-json
-Копировать код
-{
-  "description": "Молоко, хлеб, яйца",
-  "dueDate": "2025-12-20",
   "priority": "medium"
 }
-Response Example
-
-Status: 400 Bad Request
-
-Headers: Content-Type: application/json
-
-Body:
+Response: 400 Bad Request
 
 json
 Копировать код
 {
   "message": "Title is required"
 }
-### 4.4 PATCH /tasks/{id} — Update Task
-#### 4.4.1 Example: Update Task (Success)
-Request
-
-Method: PATCH
-
-URL: {{base_url}}/tasks/1
-
-Body (JSON):
-
+6.4 PATCH /tasks/{id} — Update Task
+6.4.1 Example: Update Task — Success
+bash
+Копировать код
+PATCH {{base_url}}/tasks/1?scenario=success
 json
 Копировать код
 {
   "status": "in_progress"
 }
-Response Example
-
-Status: 200 OK
-
-Headers: Content-Type: application/json
-
-Body:
-
-json
+6.4.2 Example: Update Task — Not found
+bash
 Копировать код
-{
-  "id": 1,
-  "title": "Купить продукты",
-  "description": "Молоко, хлеб, яйца",
-  "dueDate": "2025-12-20",
-  "priority": "medium",
-  "status": "in_progress"
-}
-#### 4.4.2 Example: Update Task — Not found
-Request
-
-Method: PATCH
-
-URL: {{base_url}}/tasks/9999
-
-Body (JSON):
-
-json
-Копировать код
-{
-  "status": "done"
-}
-Response Example
-
-Status: 404 Not Found
-
-Headers: Content-Type: application/json
-
-Body:
-
+PATCH {{base_url}}/tasks/9999?scenario=notfound
 json
 Копировать код
 {
   "message": "Task not found"
 }
-### 4.5 DELETE /tasks/{id} — Delete Task
-#### 4.5.1 Example: Delete Task — Success
-Request
+6.5 DELETE /tasks/{id} — Delete Task
+6.5.1 Example: Delete Task — Success
+bash
+Копировать код
+DELETE {{base_url}}/tasks/1?scenario=success
+Response: 204 No Content
 
-Method: DELETE
-
-URL: {{base_url}}/tasks/1
-
-Response Example
-
-Status: 204 No Content
-
-#### 4.5.2 Example: Delete Task — Not found
-Request
-
-Method: DELETE
-
-URL: {{base_url}}/tasks/9999
-
-Response Example
-
-Status: 404 Not Found
-
-Headers: Content-Type: application/json
-
-Body:
-
+6.5.2 Example: Delete Task — Not found
+bash
+Копировать код
+DELETE {{base_url}}/tasks/9999?scenario=notfound
 json
 Копировать код
 {
   "message": "Task not found"
 }
-### 4.6 GET /categories — Get Categories
-#### 4.6.1 Example: Get Categories
-Response Example
-
-Status: 200 OK
-
-Headers: Content-Type: application/json
-
-Body:
-
+6.6 GET /categories — Get Categories
+6.6.1 Example: Get Categories — With items
+bash
+Копировать код
+GET {{base_url}}/categories?scenario=items
 json
 Копировать код
 [
-  {
-    "id": 1,
-    "name": "Работа"
-  },
-  {
-    "id": 2,
-    "name": "Личное"
-  },
-  {
-    "id": 3,
-    "name": "Учёба"
-  }
+  { "id": 1, "name": "Работа" },
+  { "id": 2, "name": "Личное" }
 ]
-## 5. Автоматические тесты (Tests)
-Для запросов коллекции добавлены тесты во вкладке Scripts → Post-response.
+6.6.2 Example: Get Categories — Empty list
+bash
+Копировать код
+GET {{base_url}}/categories?scenario=empty
+json
+Копировать код
+[]
+7. Автоматические тесты
+Для всех методов добавлены тесты во вкладке Scripts → Post-response, проверяющие:
 
-Примеры проверок:
+корректность статус-кодов
 
-статус-код ответа (200 / 201 / 204 / 400 / 401 / 404)
+формат JSON
 
-что ответ является JSON (если ожидается JSON)
+структуру ответов
 
-наличие ключевых полей (token, user, id, и т.д.)
+соответствие данных выбранному сценарию
 
-проверки типа данных (например token — строка)
-
-## 6. Проверка работы мок-сервера
-В Postman выбрать окружение TaskManager Mock Server.
-
-Проверить POST /auth/login → Send — должен вернуться ответ из Example.
-
-Проверить GET /tasks → Send — должен вернуться список задач (или пустой список).
-
-Проверить POST /tasks → Send — должен вернуться ответ 201 Created или 400 Bad Request.
-
-Аналогично проверить PATCH /tasks/{id}, DELETE /tasks/{id}, GET /categories.
-
-## 7. Запуск коллекции (Runner)
+8. Запуск коллекции
 Коллекция была запущена через Collection Runner.
-Результат: все запросы выполнились, тесты завершились статусом PASS.
+Все запросы выполнились успешно, тесты завершились со статусом PASS.
 
-## 8. Экспорт коллекции и окружений
-В репозиторий добавлены JSON-файлы:
-
-Коллекция:
+9. Экспорт данных
+В репозиторий добавлены файлы:
 
 TaskManagerAPI.postman_collection.json
 
-Окружения:
-
 LocalAPI.postman_environment.json
 
-MockAPI.postman_environment.json
+TaskManager Mock Server.postman_environment.json
 
-Импорт в Postman:
-
-File → Import → Upload Files
-
-## 9. Вывод
+10. Вывод
 В рамках практической работы:
 
-создана коллекция запросов для API TaskManager;
+создана Postman-коллекция для API TaskManager
 
-настроены окружения (локальное и мок-сервер);
+реализованы успешные и негативные сценарии через Mock Server
 
-создан Mock Server и настроены Examples для всех методов;
+добавлены автоматические тесты
 
-для части методов сделано несколько вариантов ответа (success/error);
-
-добавлены автоматические тесты и выполнен запуск через Runner.
-
-Работа соответствует требованиям практики №6.
+обеспечена возможность тестирования без реального бэкенда
