@@ -95,9 +95,9 @@ Create Task (ошибка валидации):
 
 ```bash
 Копировать код
-POST {{base_url}}/tasks?scenario=validation```
+POST {{base_url}}/tasks?scenario=validation
 Body (без title):
-
+```
 ```json
 Копировать код
 {
