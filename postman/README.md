@@ -88,48 +88,50 @@ Body:
   "email": "wrong@example.com",
   "password": "wrong"
 }
+```
 Ожидаемый ответ: 401 Unauthorized, {"message":"Invalid credentials"}
 
 Create Task (ошибка валидации):
 
-bash
+```bash
 Копировать код
-POST {{base_url}}/tasks?scenario=validation
+POST {{base_url}}/tasks?scenario=validation```
 Body (без title):
 
-json
+```json
 Копировать код
 {
   "priority": "medium"
 }
+```
 Ожидаемый ответ: 400 Bad Request, {"message":"Title is required"}
 
 Update Task (задача не найдена):
 
-bash
+```bash
 Копировать код
-PATCH {{base_url}}/tasks/9999?scenario=notfound
+PATCH {{base_url}}/tasks/9999?scenario=notfound ```
 Ожидаемый ответ: 404 Not Found, {"message":"Task not found"}
 
 Delete Task (задача не найдена):
 
-bash
+```bash
 Копировать код
-DELETE {{base_url}}/tasks/9999?scenario=notfound
+DELETE {{base_url}}/tasks/9999?scenario=notfound ```
 Ожидаемый ответ: 404 Not Found, {"message":"Task not found"}
 
 Get All Tasks (пустой список):
 
-bash
+``` bash
 Копировать код
-GET {{base_url}}/tasks?scenario=empty
+GET {{base_url}}/tasks?scenario=empty ```
 Ожидаемый ответ: 200 OK, []
 
 Get Categories (пустой список):
 
-bash
+```bash
 Копировать код
-GET {{base_url}}/categories?scenario=empty
+GET {{base_url}}/categories?scenario=empty ```
 Ожидаемый ответ: 200 OK, []
 
 6. Examples (детализация ответов)
@@ -137,20 +139,21 @@ GET {{base_url}}/categories?scenario=empty
 6.1.1 Example: Login — Success
 Request
 
-bash
+```bash
 Копировать код
-POST {{base_url}}/auth/login
-json
+POST {{base_url}}/auth/login ```
+``` json
 Копировать код
 {
   "email": "user@example.com",
   "password": "secret123"
 }
+```
 Response
 
 Status: 200 OK
 
-json
+```json
 Копировать код
 {
   "token": "mocked-jwt-token-123",
@@ -159,32 +162,33 @@ json
     "email": "user@example.com"
   }
 }
+```
 6.1.2 Example: Login — Invalid credentials
 Request
 
-bash
+```bash
 Копировать код
-POST {{base_url}}/auth/login?scenario=invalid
-json
+POST {{base_url}}/auth/login?scenario=invalid ```
+```json
 Копировать код
 {
   "email": "wrong@example.com",
   "password": "wrong"
-}
+} ```
 Response
 
 Status: 401 Unauthorized
 
-json
+```json
 Копировать код
 {
   "message": "Invalid credentials"
-}
+} ```
 6.2 GET /tasks — Get All Tasks
 6.2.1 Example: Get All Tasks — With items
-bash
+```bash
 Копировать код
-GET {{base_url}}/tasks?scenario=items
+GET {{base_url}}/tasks?scenario=items ```
 json
 Копировать код
 [
@@ -196,94 +200,94 @@ json
   }
 ]
 6.2.2 Example: Get All Tasks — Empty list
-bash
+```bash
 Копировать код
-GET {{base_url}}/tasks?scenario=empty
-json
+GET {{base_url}}/tasks?scenario=empty ```
+```json
 Копировать код
-[]
+[] ```
 6.3 POST /tasks — Create Task
 6.3.1 Example: Create Task — Success
-bash
+``` bash
 Копировать код
-POST {{base_url}}/tasks?scenario=success
-json
+POST {{base_url}}/tasks?scenario=success ```
+```json
 Копировать код
 {
   "title": "Купить продукты",
   "priority": "medium"
-}
+} ```
 Response: 201 Created
 
 6.3.2 Example: Create Task — Validation error
-bash
+``` bash
 Копировать код
-POST {{base_url}}/tasks?scenario=validation
-json
+POST {{base_url}}/tasks?scenario=validation ```
+```json
 Копировать код
 {
   "priority": "medium"
-}
+} ```
 Response: 400 Bad Request
 
-json
+``` json
 Копировать код
 {
   "message": "Title is required"
-}
+} ```
 6.4 PATCH /tasks/{id} — Update Task
 6.4.1 Example: Update Task — Success
-bash
+``` bash
 Копировать код
-PATCH {{base_url}}/tasks/1?scenario=success
-json
+PATCH {{base_url}}/tasks/1?scenario=success ```
+```json 
 Копировать код
 {
   "status": "in_progress"
-}
+}```
 6.4.2 Example: Update Task — Not found
-bash
+```bash
 Копировать код
-PATCH {{base_url}}/tasks/9999?scenario=notfound
-json
+PATCH {{base_url}}/tasks/9999?scenario=notfound ```
+```json
 Копировать код
 {
   "message": "Task not found"
-}
+}```
 6.5 DELETE /tasks/{id} — Delete Task
 6.5.1 Example: Delete Task — Success
-bash
+```bash
 Копировать код
-DELETE {{base_url}}/tasks/1?scenario=success
+DELETE {{base_url}}/tasks/1?scenario=success ```
 Response: 204 No Content
 
 6.5.2 Example: Delete Task — Not found
-bash
+``` bash
 Копировать код
-DELETE {{base_url}}/tasks/9999?scenario=notfound
-json
+DELETE {{base_url}}/tasks/9999?scenario=notfound ```
+``` json
 Копировать код
 {
   "message": "Task not found"
-}
+} ```
 6.6 GET /categories — Get Categories
 6.6.1 Example: Get Categories — With items
-bash
+``` bash
 Копировать код
-GET {{base_url}}/categories?scenario=items
-json
+GET {{base_url}}/categories?scenario=items ```
+``` json 
 Копировать код
 [
   { "id": 1, "name": "Работа" },
   { "id": 2, "name": "Личное" }
-]
+] ```
 6.6.2 Example: Get Categories — Empty list
-bash
+```bash
 Копировать код
-GET {{base_url}}/categories?scenario=empty
-json
+GET {{base_url}}/categories?scenario=empty ```
+``` json
 Копировать код
-[]
+[] ```
 7. Автоматические тесты
 Для всех методов добавлены тесты во вкладке Scripts → Post-response, проверяющие:
 
