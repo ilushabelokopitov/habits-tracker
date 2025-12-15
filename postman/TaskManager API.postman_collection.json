@@ -1,0 +1,836 @@
+{
+	"info": {
+		"_postman_id": "24c62f2b-6fb5-46a6-9419-7d446912f856",
+		"name": "TaskManager API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44009630"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200 or 401\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 401]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", () => {\r",
+									"  pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"  pm.test(\"Token exists\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"token\");\r",
+									"  });\r",
+									"} else {\r",
+									"  pm.test(\"Error message exists\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"message\");\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"secret123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"user@example.com\",\r\n    \"password\": \"secret123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\r\n  \"token\": \"mocked-jwt-token-123\",\r\n  \"user\": {\r\n    \"id\": 1,\r\n    \"email\": \"user@example.com\"\r\n  }\r\n}\r\n"
+						},
+						{
+							"name": "Login – Invalid credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"wrong@example.com\",\r\n  \"password\": \"wrong\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login?scenario=invalid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "invalid"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n  \"message\": \"Invalid credentials\"\r\n}\r\n"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tasks Management",
+			"item": [
+				{
+					"name": "Get All Tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON array\", () => {\r",
+									"  const json = pm.response.json();\r",
+									"  pm.expect(json).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each task has id and title (if list not empty)\", () => {\r",
+									"  const json = pm.response.json();\r",
+									"  if (json.length > 0) {\r",
+									"    pm.expect(json[0]).to.have.property(\"id\");\r",
+									"    pm.expect(json[0]).to.have.property(\"title\");\r",
+									"  } else {\r",
+									"    pm.expect(json.length).to.eql(0);\r",
+									"  }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get All Tasks – With items",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks?scenario=items",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "items"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "[\r\n  {\r\n    \"id\": 1,\r\n    \"title\": \"Купить продукты\",\r\n    \"description\": \"Молоко, хлеб, яйца\",\r\n    \"dueDate\": \"2025-12-20\",\r\n    \"priority\": \"medium\",\r\n    \"status\": \"pending\"\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"title\": \"Сделать домашку по БД\",\r\n    \"description\": \"Лаба по нормализации\",\r\n    \"dueDate\": \"2025-12-22\",\r\n    \"priority\": \"high\",\r\n    \"status\": \"in_progress\"\r\n  }\r\n]\r\n"
+						},
+						{
+							"name": "Get All Tasks – Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tasks?scenario=empty",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "empty"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "[]"
+						}
+					]
+				},
+				{
+					"name": "Create Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 201 or 400\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([201, 400]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", () => {\r",
+									"  pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"  pm.test(\"Created task has id and title\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"id\");\r",
+									"    pm.expect(json).to.have.property(\"title\");\r",
+									"  });\r",
+									"} else {\r",
+									"  pm.test(\"Validation message exists\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"message\");\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Купить продукты\",\r\n  \"description\": \"Молоко, хлеб, яйца\",\r\n  \"dueDate\": \"2025-12-20\",\r\n  \"priority\": \"medium\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Task — Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Купить продукты\",\r\n  \"description\": \"Молоко, хлеб, яйца\",\r\n  \"dueDate\": \"2025-12-20\",\r\n  \"priority\": \"medium\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks?scenario=success",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "success"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n  \"title\": \"Купить продукты\",\r\n  \"description\": \"Молоко, хлеб, яйца\",\r\n  \"dueDate\": \"2025-12-20\",\r\n  \"priority\": \"medium\"\r\n}\r\n\r\n"
+						},
+						{
+							"name": "Create Task — Validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Молоко, хлеб, яйца\",\r\n  \"dueDate\": \"2025-12-20\",\r\n  \"priority\": \"medium\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks?scenario=validation",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "validation"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\r\n  \"message\": \"Title is required\"\r\n}\r\n\r\n\r\n"
+						}
+					]
+				},
+				{
+					"name": "Update Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200 or 404\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 404]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON\", () => {\r",
+									"  pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"  pm.test(\"Updated task has id\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"id\");\r",
+									"  });\r",
+									"} else {\r",
+									"  pm.test(\"Not found message exists\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"message\");\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Купить продукты в Ашане\",\r\n  \"priority\": \"high\",\r\n  \"status\": \"in_progress\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update Task",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"in_progress\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/1?scenario=success",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "success"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\r\n  \"id\": 1,\r\n  \"title\": \"Обновлённая задача\",\r\n  \"completed\": true\r\n}\r\n"
+						},
+						{
+							"name": "Update Task – Not found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"done\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/9999?scenario=notfound",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"9999"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "notfound"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n  \"message\": \"Task not found\"\r\n}\r\n"
+						}
+					]
+				},
+				{
+					"name": "Delete Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 204 or 404\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([204, 404]);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 404) {\r",
+									"  pm.test(\"Not found message exists\", () => {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property(\"message\");\r",
+									"  });\r",
+									"} else {\r",
+									"  pm.test(\"No content on success\", () => {\r",
+									"    pm.expect(pm.response.text()).to.be.empty;\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete Task — Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/1?scenario=success",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "success"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": ""
+						},
+						{
+							"name": "Delete Task — Not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \"message\": \"Task not found\" }\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/9999?scenario=notfound",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"9999"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "notfound"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n  \"message\": \"Task not found\"\r\n}\r\n"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get Categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is JSON array\", () => {\r",
+									"  const json = pm.response.json();\r",
+									"  pm.expect(json).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each category has id and title (if list not empty)\", () => {\r",
+									"  const json = pm.response.json();\r",
+									"  if (json.length > 0) {\r",
+									"    pm.expect(json[0]).to.have.property(\"id\");\r",
+									"    pm.expect(json[0]).to.have.property(\"title\");\r",
+									"  }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Categories — With items",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories?scenario=items",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "items"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "[\r\n  {\r\n    \"id\": 1,\r\n    \"name\": \"Работа\"\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"name\": \"Личное\"\r\n  },\r\n  {\r\n    \"id\": 3,\r\n    \"name\": \"Учёба\"\r\n  }\r\n]\r\n"
+						},
+						{
+							"name": "Get Categories — Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/categories?scenario=empty",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories"
+									],
+									"query": [
+										{
+											"key": "scenario",
+											"value": "empty"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "[]\r\n"
+						}
+					]
+				}
+			]
+		}
+	]
+}
